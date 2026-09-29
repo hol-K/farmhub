@@ -1,0 +1,32 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // Profil : lisible par tout utilisateur connecté (nom/téléphone du producteur),
+    // modifiable uniquement par son propriétaire. Le téléphone doit être celui du compte.
+    match /users/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.phone == request.auth.token.phone_number
+        && request.resource.data.role in ['producer', 'buyer'];
+      allow delete: if false;
+    }
+
+    // Produits : lisibles par tout utilisateur connecté,
+    // écrits uniquement par le producteur qui les possède.
+    match /products/{productId} {
+      allow read: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.producerId == request.auth.uid;
+      allow update, delete: if signedIn()
+        && resource.data.producerId == request.auth.uid
+        && request.resource.data.producerId == resource.data.producerId;
+    }
+  }
+}
