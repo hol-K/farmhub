@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
@@ -25,8 +28,11 @@ class _ProductFormState extends State<ProductForm> {
   final _priceController = TextEditingController();
   final _addressController = TextEditingController();
 
+  final ImagePicker _imagePicker = ImagePicker();
+
   String? _selectedUnit;
   DateTime? _harvestDate;
+  XFile? _selectedPhoto;
 
   @override
   void dispose() {
@@ -52,6 +58,71 @@ class _ProductFormState extends State<ProductForm> {
 
     setState(() {
       _harvestDate = selectedDate;
+    });
+  }
+
+  Future<void> _pickPhoto(ImageSource source) async {
+    try {
+      final photo = await _imagePicker.pickImage(
+        source: source,
+      );
+
+      if (photo == null) return;
+
+      setState(() {
+        _selectedPhoto = photo;
+      });
+    } catch (_) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(AppTexts.photoSelectionError),
+        ),
+      );
+    }
+  }
+
+  void _showPhotoOptions() {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Wrap(
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt_outlined),
+                title: const Text(AppTexts.takePhoto),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickPhoto(ImageSource.camera);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: const Text(AppTexts.chooseFromGallery),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickPhoto(ImageSource.gallery);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.close),
+                title: const Text(AppTexts.cancel),
+                onTap: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _removePhoto() {
+    setState(() {
+      _selectedPhoto = null;
     });
   }
 
@@ -129,6 +200,7 @@ class _ProductFormState extends State<ProductForm> {
               if (value == null || value.isEmpty) {
                 return AppTexts.unitRequired;
               }
+
               return null;
             },
           ),
@@ -148,10 +220,10 @@ class _ProductFormState extends State<ProductForm> {
 
           TextFormField(
             readOnly: true,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: AppTexts.harvestDate,
               hintText: 'Sélectionner une date',
-              suffixIcon: const Icon(Icons.calendar_today),
+              suffixIcon: Icon(Icons.calendar_today),
             ),
             controller: TextEditingController(
               text: _harvestDate == null
@@ -176,11 +248,33 @@ class _ProductFormState extends State<ProductForm> {
           ),
           const SizedBox(height: 24),
 
-          OutlinedButton.icon(
-            onPressed: () {},
-            icon: const Icon(Icons.add_a_photo_outlined),
-            label: const Text(AppTexts.addPhoto),
-          ),
+          if (_selectedPhoto == null)
+            OutlinedButton.icon(
+              onPressed: _showPhotoOptions,
+              icon: const Icon(Icons.add_a_photo_outlined),
+              label: const Text(AppTexts.addPhoto),
+            )
+          else
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: Image.file(
+                    File(_selectedPhoto!.path),
+                    height: 220,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: _removePhoto,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Supprimer la photo'),
+                ),
+              ],
+            ),
+
           const SizedBox(height: 24),
 
           ElevatedButton(
