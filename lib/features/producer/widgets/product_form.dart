@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_config.dart';
@@ -61,6 +62,22 @@ class _ProductFormState extends State<ProductForm> {
     });
   }
 
+  Future<XFile?> _compressPhoto(XFile photo) async {
+    final targetPath =
+        '${Directory.systemTemp.path}/farmhub_${DateTime.now().millisecondsSinceEpoch}.jpg';
+
+    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+      photo.path,
+      targetPath,
+      minWidth: AppConfig.photoMaxSize,
+      minHeight: AppConfig.photoMaxSize,
+      quality: AppConfig.photoQuality,
+      format: CompressFormat.jpeg,
+    );
+
+    return compressedFile;
+  }
+
   Future<void> _pickPhoto(ImageSource source) async {
     try {
       final photo = await _imagePicker.pickImage(
@@ -69,8 +86,22 @@ class _ProductFormState extends State<ProductForm> {
 
       if (photo == null) return;
 
+      final compressedPhoto = await _compressPhoto(photo);
+
+      if (compressedPhoto == null) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(AppTexts.photoCompressionError),
+          ),
+        );
+
+        return;
+      }
+
       setState(() {
-        _selectedPhoto = photo;
+        _selectedPhoto = compressedPhoto;
       });
     } catch (_) {
       if (!mounted) return;
