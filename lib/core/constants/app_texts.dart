@@ -6,6 +6,7 @@ abstract final class AppTexts {
   static const tagline = 'Vendez votre récolte directement';
   static const offline = 'Hors-ligne';
   static const genericError = 'Une erreur est survenue. Réessayez.';
+  static const save = 'Enregistrer';
 
   // === Lot 1 : Connexion ===
   static const phoneTitle = 'Votre numéro de téléphone';
@@ -38,4 +39,20 @@ abstract final class AppTexts {
   // === Lot 4 : Acheteur ===
 
   // === Lot 5 : Profil ===
+  static const profileTitle = 'Profil';
+  static const phoneLabel = 'Numéro de téléphone';
+  static const phoneReadonlyHint = 'Non modifiable';
+  static const roleLabel = 'Rôle';
+  static const roleProducer = 'Producteur';
+  static const roleBuyer = 'Acheteur';
+  static const logout = 'Se déconnecter';
+  static const nameSaved = 'Nom enregistré';
+  static const nameSaveError = 'Impossible d\'enregistrer le nom. Réessayez.';
+  static const profileUnavailable = 'Profil indisponible. Réessayez plus tard.';
+
+  static String roleLabelFor(String roleName) => switch (roleName) {
+        'producer' => roleProducer,
+        'buyer' => roleBuyer,
+        _ => roleName,
+      };
 }

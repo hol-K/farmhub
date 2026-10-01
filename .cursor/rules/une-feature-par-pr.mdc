@@ -1,0 +1,18 @@
+---
+description: Une fonctionnalité à la fois, une branche, validation avant de continuer
+alwaysApply: true
+---
+
+# Une fonctionnalité à la fois
+
+- **Une seule branche de travail** (ne pas créer d’autres branches sauf demande explicite)
+- **Une fonctionnalité à la fois** (ex. écran profil, puis textes — pas les deux d’un coup)
+- **Attendre la validation de l’utilisateur** avant de passer à la fonctionnalité suivante
+- Ne pas créer de PR / push / nouvelle branche sauf demande explicite
+- Les correctifs **liés** à la feature en cours (ex. test cassé) vont avec cette feature
+
+## Lot 5 — ordre
+
+1. Écran profil → **validation**
+2. Centralisation des textes → **validation**
+3. Relecture UX (si besoin) → **validation**
