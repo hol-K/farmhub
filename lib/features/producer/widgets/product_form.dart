@@ -8,13 +8,35 @@ import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
 import '../../../core/utils/validators.dart';
 
+class ProductFormData {
+  const ProductFormData({
+    required this.name,
+    required this.variety,
+    required this.quantity,
+    required this.unit,
+    required this.minPrice,
+    required this.harvestDate,
+    required this.address,
+    required this.photo,
+  });
+
+  final String name;
+  final String variety;
+  final num quantity;
+  final String unit;
+  final int minPrice;
+  final DateTime harvestDate;
+  final String address;
+  final XFile photo;
+}
+
 class ProductForm extends StatefulWidget {
   const ProductForm({
     super.key,
     required this.onSubmit,
   });
 
-  final VoidCallback onSubmit;
+  final Future<void> Function(ProductFormData data) onSubmit;
 
   @override
   State<ProductForm> createState() => _ProductFormState();
@@ -34,6 +56,7 @@ class _ProductFormState extends State<ProductForm> {
   String? _selectedUnit;
   DateTime? _harvestDate;
   XFile? _selectedPhoto;
+  bool _isSubmitting = false;
 
   @override
   void dispose() {
@@ -66,7 +89,8 @@ class _ProductFormState extends State<ProductForm> {
     final targetPath =
         '${Directory.systemTemp.path}/farmhub_${DateTime.now().millisecondsSinceEpoch}.jpg';
 
-    final compressedFile = await FlutterImageCompress.compressAndGetFile(
+    final compressedFile =
+        await FlutterImageCompress.compressAndGetFile(
       photo.path,
       targetPath,
       minWidth: AppConfig.photoMaxSize,
@@ -157,17 +181,52 @@ class _ProductFormState extends State<ProductForm> {
     });
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    if (_harvestDate == null) {
+    if (_harvestDate == null || _selectedPhoto == null) {
       setState(() {});
       return;
     }
 
-    widget.onSubmit();
+    final quantity = num.tryParse(
+      _quantityController.text.trim(),
+    );
+
+    final minPrice = int.tryParse(
+      _priceController.text.trim(),
+    );
+
+    if (quantity == null || minPrice == null) {
+      return;
+    }
+
+    final data = ProductFormData(
+      name: _nameController.text.trim(),
+      variety: _varietyController.text.trim(),
+      quantity: quantity,
+      unit: _selectedUnit!,
+      minPrice: minPrice,
+      harvestDate: _harvestDate!,
+      address: _addressController.text.trim(),
+      photo: _selectedPhoto!,
+    );
+
+    setState(() {
+      _isSubmitting = true;
+    });
+
+    try {
+      await widget.onSubmit(data);
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isSubmitting = false;
+        });
+      }
+    }
   }
 
   @override
@@ -264,7 +323,9 @@ class _ProductFormState extends State<ProductForm> {
                       '${_harvestDate!.year}',
             ),
             onTap: _selectHarvestDate,
-            validator: (_) => Validators.harvestDate(_harvestDate),
+            validator: (_) => Validators.harvestDate(
+              _harvestDate,
+            ),
           ),
           const SizedBox(height: 16),
 
@@ -299,7 +360,9 @@ class _ProductFormState extends State<ProductForm> {
                 ),
                 const SizedBox(height: 8),
                 OutlinedButton.icon(
-                  onPressed: _removePhoto,
+                  onPressed: _isSubmitting
+                      ? null
+                      : _removePhoto,
                   icon: const Icon(Icons.delete_outline),
                   label: const Text('Supprimer la photo'),
                 ),
@@ -309,8 +372,12 @@ class _ProductFormState extends State<ProductForm> {
           const SizedBox(height: 24),
 
           ElevatedButton(
-            onPressed: _submit,
-            child: const Text(AppTexts.publish),
+            onPressed: _isSubmitting ? null : _submit,
+            child: Text(
+              _isSubmitting
+                  ? AppTexts.publishing
+                  : AppTexts.publish,
+            ),
           ),
         ],
       ),
