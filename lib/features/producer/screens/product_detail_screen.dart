@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_texts.dart';
+
 // PLACEHOLDER (Lot 1) — à remplacer par le Lot 3.
 class ProductDetailScreen extends StatelessWidget {
   const ProductDetailScreen({super.key, required this.productId});
@@ -9,8 +11,13 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Détail')),
-      body: Center(child: Text('À faire — Lot 3\n(produit $productId)', textAlign: TextAlign.center)),
+      appBar: AppBar(title: const Text(AppTexts.detail)),
+      body: Center(
+        child: Text(
+          AppTexts.producerDetailPlaceholder(productId),
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }

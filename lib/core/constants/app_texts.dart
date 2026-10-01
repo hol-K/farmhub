@@ -7,6 +7,7 @@ abstract final class AppTexts {
   static const offline = 'Hors-ligne';
   static const genericError = 'Une erreur est survenue. Réessayez.';
   static const save = 'Enregistrer';
+  static const detail = 'Détail';
 
   // === Lot 1 : Connexion ===
   static const phoneTitle = 'Votre numéro de téléphone';
@@ -33,10 +34,23 @@ abstract final class AppTexts {
   static const errNetwork = 'Pas de connexion internet.';
 
   // === Lot 2 : Publication ===
+  static const publishTitle = 'Publier';
+  static const publishPlaceholder = 'À faire — Lot 2';
 
   // === Lot 3 : Mes produits ===
+  static const myProductsTitle = 'Mes produits';
+  static const myProductsPlaceholder = 'À faire — Lot 3\n(voir un détail)';
+  static const publishFab = 'Publier';
+  static String producerDetailPlaceholder(String productId) =>
+      'À faire — Lot 3\n(produit $productId)';
 
   // === Lot 4 : Acheteur ===
+  static const harvestsTitle = 'Récoltes';
+  static const harvestsPlaceholder = 'À faire — Lot 4\n(voir un détail)';
+  static const searchTitle = 'Rechercher';
+  static const searchPlaceholder = 'À faire — Lot 4';
+  static String buyerDetailPlaceholder(String productId) =>
+      'À faire — Lot 4\n(produit $productId)';
 
   // === Lot 5 : Profil ===
   static const profileTitle = 'Profil';
