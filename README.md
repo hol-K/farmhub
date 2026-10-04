@@ -20,7 +20,6 @@ Le projet suit une architecture par fonctionnalités :
 - `lib/features/profile` : profil utilisateur
 - `lib/router` : routes et redirections
 
-Les contrats partagés (Firestore, modèle, routes, providers) sont décrits dans [`PROJET.md`](PROJET.md).
 
 ## Répartition des tâches (5 lots)
 
