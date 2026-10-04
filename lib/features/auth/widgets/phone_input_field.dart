@@ -22,15 +22,29 @@ class PhoneInputField extends StatelessWidget {
       autofocus: true,
       keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.done,
-      style: const TextStyle(fontSize: 22, letterSpacing: 1.5),
+      style: const TextStyle(fontSize: 22, letterSpacing: 1.4),
       maxLength: AppConfig.phoneLength,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       autofillHints: const [AutofillHints.telephoneNumberNational],
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         prefixText: '${AppConfig.countryCode} ',
         hintText: AppTexts.phoneHint,
-        prefixIcon: Icon(Icons.phone),
+        prefixIcon: const Icon(Icons.phone_android_rounded),
         counterText: '',
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: Colors.green.shade200),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: BorderSide(color: Colors.green.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(18),
+          borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 2),
+        ),
       ),
       validator: validateBeninPhone,
       onFieldSubmitted: onSubmitted,

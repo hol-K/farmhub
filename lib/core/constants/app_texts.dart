@@ -33,10 +33,53 @@ abstract final class AppTexts {
   static const errTooManyRequests = 'Trop d\'essais. Réessayez plus tard.';
   static const errNetwork = 'Pas de connexion internet.';
 
-  // === Lot 2 : Publication ===
-  static const publishTitle = 'Publier';
-  static const publishPlaceholder = 'À faire — Lot 2';
+ 
+    // === Lot 2 : Publication ===
 
+  static const publishTitle = 'Publier une récolte';
+  static const productName = 'Nom du produit';
+  static const productNameHint = 'Ex. Tomate';
+  static const variety = 'Variété';
+  static const varietyHint = 'Ex. Roma';
+  static const quantity = 'Quantité disponible';
+  static const quantityHint = 'Ex. 50';
+  static const unit = 'Unité';
+  static const minimumPrice = 'Prix minimum';
+  static const minimumPriceHint = 'Ex. 15000';
+  static const fcfa = 'FCFA';
+  static const harvestDate = 'Date de récolte';
+  static const address = 'Adresse';
+  static const addressHint = 'Village, commune, point de repère';
+  static const productPhoto = 'Photo du produit';
+  static const addPhoto = 'Ajouter une photo';
+  static const takePhoto = 'Prendre une photo';
+  static const chooseFromGallery = 'Choisir dans la galerie';
+  static const cancel = 'Annuler';
+  static const publish = 'Publier';
+  static const publishing = 'Publication en cours...';
+
+  // Messages de validation
+  static const productNameRequired = 'Le nom du produit est obligatoire.';
+  static const quantityRequired = 'La quantité est obligatoire.';
+  static const quantityInvalid = 'Entrez une quantité valide.';
+  static const unitRequired = 'Sélectionnez une unité.';
+  static const minimumPriceRequired = 'Le prix minimum est obligatoire.';
+  static const minimumPriceInvalid = 'Entrez un prix valide.';
+  static const harvestDateRequired = 'La date de récolte est obligatoire.';
+  static const addressRequired = 'L’adresse est obligatoire.';
+
+  // Messages photo
+  static const photoRequired = 'Ajoutez une photo du produit.';
+  static const photoCompressionError =
+      'Impossible de compresser la photo.';
+  static const photoSelectionError =
+      'Impossible de sélectionner la photo.';
+
+  // Messages de publication
+  static const publishSuccess = 'Récolte publiée avec succès.';
+  static const publishError =
+      'Impossible de publier la récolte. Réessayez.';
+      
   // === Lot 3 : Mes produits ===
   static const myProductsTitle = 'Mes produits';
   static const myProductsPlaceholder = 'À faire — Lot 3\n(voir un détail)';
