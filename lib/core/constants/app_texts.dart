@@ -52,6 +52,8 @@ abstract final class AppTexts {
   static const cancel = 'Annuler';
   static const publish = 'Publier';
   static const publishing = 'Publication en cours...';
+  static const changePhoto = 'Changer la photo';
+  static const selectDate = 'Choisir une date';
 
   // Messages de validation
   static const productNameRequired = 'Le nom du produit est obligatoire.';
@@ -74,18 +76,11 @@ abstract final class AppTexts {
 
   // === Lot 3 : Mes produits ===
   static const myProductsTitle = 'Mes produits';
-  static const myProductsPlaceholder = 'À faire — Lot 3\n(voir un détail)';
   static const publishFab = 'Publier';
-  static String producerDetailPlaceholder(String productId) =>
-      'À faire — Lot 3\n(produit $productId)';
 
   // === Lot 4 : Acheteur ===
   static const harvestsTitle = 'Récoltes';
-  static const harvestsPlaceholder = 'À faire — Lot 4\n(voir un détail)';
   static const searchTitle = 'Rechercher';
-  static const searchPlaceholder = 'À faire — Lot 4';
-  static String buyerDetailPlaceholder(String productId) =>
-      'À faire — Lot 4\n(produit $productId)';
 
   // === Lot 5 : Profil ===
   static const profileTitle = 'Profil';
