@@ -17,7 +17,7 @@ class MyProductsScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mes produits'),
+        title: const Text(AppTexts.myProductsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.person_outline_rounded),
@@ -81,7 +81,7 @@ class MyProductsScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => context.push('/producer/publish'),
         icon: const Icon(Icons.add),
-        label: const Text('Publier'),
+        label: const Text(AppTexts.publishFab),
       ),
     );
   }

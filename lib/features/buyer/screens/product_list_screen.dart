@@ -17,7 +17,7 @@ class ProductListScreen extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Récoltes'),
+        title: const Text(AppTexts.harvestsTitle),
         actions: [
           IconButton(
             icon: const Icon(Icons.search_rounded),
