@@ -1,26 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:farmhub/features/buyer/providers.dart';
-import 'package:farmhub/features/buyer/widgets/product_card.dart';
+
+import '../product_filters.dart';
+import '../../producer/providers.dart';
+import '../../producer/widgets/product_card.dart';
 
 class ProductSearchScreen extends ConsumerStatefulWidget {
   const ProductSearchScreen({super.key});
 
   @override
-  ConsumerState<ProductSearchScreen> createState() =>
-      _ProductSearchScreenState();
+  ConsumerState<ProductSearchScreen> createState() => _ProductSearchScreenState();
 }
 
 class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   final _controller = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    // Repartir d'une recherche vide à chaque ouverture.
-    Future.microtask(() => ref.read(searchQueryProvider.notifier).clear());
-  }
 
   @override
   void dispose() {
@@ -30,48 +24,45 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final resultsAsync = ref.watch(filteredProductsProvider);
+    final products = ref.watch(allProductsProvider);
+    final query = _controller.text;
+
+    final filtered = products.when(
+      loading: () => const <dynamic>[],
+      error: (error, stackTrace) => const <dynamic>[],
+      data: (items) => filterProductsByQuery(items, query),
+    );
 
     return Scaffold(
-      appBar: AppBar(
-        title: TextField(
-          controller: _controller,
-          autofocus: true,
-          onChanged: (v) => ref.read(searchQueryProvider.notifier).setQuery(v),
-          decoration: const InputDecoration(
-            hintText: 'Nom, variété ou localisation',
-            border: InputBorder.none,
+      appBar: AppBar(title: const Text('Rechercher')),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            child: TextField(
+              controller: _controller,
+              decoration: const InputDecoration(
+                hintText: 'Nom, variété, lieu ou producteur',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (_) => setState(() {}),
+            ),
           ),
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () {
-              _controller.clear();
-              ref.read(searchQueryProvider.notifier).clear();
-            },
+          Expanded(
+            child: filtered.isEmpty
+                ? const Center(child: Text('Aucun résultat pour cette recherche.'))
+                : ListView.separated(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+                    itemCount: filtered.length,
+                    separatorBuilder: (context, index) => const SizedBox(height: 12),
+                    itemBuilder: (context, index) => ProductCard(
+                      product: filtered[index],
+                      onTap: () => context.push('/buyer/product/${filtered[index].id}'),
+                    ),
+                  ),
           ),
         ],
-      ),
-      body: resultsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) =>
-            const Center(child: Text('Impossible de charger les produits.')),
-        data: (products) {
-          if (products.isEmpty) {
-            return const Center(child: Text('Aucun résultat.'));
-          }
-          return ListView.builder(
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return ProductCard(
-                product: product,
-                onTap: () => context.push('/buyer/product/${product.id}'),
-              );
-            },
-          );
-        },
       ),
     );
   }
