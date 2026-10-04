@@ -8,12 +8,16 @@ abstract final class Validators {
     return null;
   }
 
+  /// « 12,5 » ou « 12.5 » → 12.5 (virgule française acceptée).
+  static num? parseQuantity(String? value) =>
+      num.tryParse((value ?? '').trim().replaceAll(',', '.'));
+
   static String? quantity(String? value) {
     if (value == null || value.trim().isEmpty) {
       return AppTexts.quantityRequired;
     }
 
-    final quantity = num.tryParse(value.trim());
+    final quantity = parseQuantity(value);
 
     if (quantity == null || quantity <= 0) {
       return AppTexts.quantityInvalid;
