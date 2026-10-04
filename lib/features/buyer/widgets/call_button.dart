@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+/// Gros bouton « Appeler » : affiche le numéro, puis ouvre l'app téléphone.
 class CallButton extends StatelessWidget {
-  final String phone;
-
   const CallButton({super.key, required this.phone});
+
+  final String phone;
 
   Future<void> _call(BuildContext context) async {
     final cleaned = phone.replaceAll(RegExp(r'[^\d+]'), '');
     final uri = Uri(scheme: 'tel', path: cleaned);
 
-    // 1. Afficher le numéro
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Contacter le vendeur'),
+        title: const Text('Contacter le producteur'),
         content: SelectableText(
           phone,
           style: Theme.of(ctx)
@@ -38,11 +38,10 @@ class CallButton extends StatelessWidget {
 
     if (confirmed != true) return;
 
-    // 2. Ouvrir l'app téléphone
     final ok = await launchUrl(uri);
     if (!ok && context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Impossible d\'appeler le $phone')),
+        SnackBar(content: Text("Impossible d'appeler le $phone")),
       );
     }
   }
