@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../core/constants/app_texts.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../../core/utils/extensions.dart';
@@ -20,19 +21,18 @@ class ProductDetailScreen extends ConsumerWidget {
     final online = ref.watch(connectivityProvider).value ?? true;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Détail du produit')),
+      appBar: AppBar(title: const Text(AppTexts.productDetailTitle)),
       body: Column(
         children: [
           if (!online) const OfflineBanner(),
           Expanded(
             child: product.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => const Center(
-                child: Text('Impossible de charger ce produit.'),
-              ),
+              error: (_, _) =>
+                  const Center(child: Text(AppTexts.productLoadError)),
               data: (item) {
                 if (item == null || item.producerId != user?.uid) {
-                  return const Center(child: Text('Produit introuvable.'));
+                  return const Center(child: Text(AppTexts.productNotFound));
                 }
                 return ListView(
                   padding: const EdgeInsets.all(16),
@@ -60,62 +60,31 @@ class ProductDetailScreen extends ConsumerWidget {
                       ),
                     ],
                     const SizedBox(height: 20),
-                    _DetailRow(
-                      label: 'Quantité',
+                    DetailRow(
+                      label: AppTexts.detailQuantity,
                       value: '${item.quantity} ${item.unit}',
                     ),
-                    _DetailRow(
-                      label: 'Prix minimum',
+                    DetailRow(
+                      label: AppTexts.minimumPrice,
                       value: item.minPrice.fcfa,
                     ),
-                    _DetailRow(
-                      label: 'Récolte prévue',
+                    DetailRow(
+                      label: AppTexts.detailHarvest,
                       value: item.harvestDate.dmy,
                     ),
-                    _DetailRow(label: 'Localisation', value: item.address),
+                    DetailRow(
+                      label: AppTexts.detailLocation,
+                      value: item.address,
+                    ),
                     if (item.createdAt != null)
-                      _DetailRow(
-                        label: 'Publié le',
+                      DetailRow(
+                        label: AppTexts.detailPublishedOn,
                         value: item.createdAt!.dmy,
                       ),
-                    const SizedBox(height: 16),
-                    Text(
-                      'Contact producteur',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(item.producerName),
-                    Text(item.producerPhone),
                   ],
                 );
               },
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _DetailRow extends StatelessWidget {
-  const _DetailRow({required this.label, required this.value});
-
-  final String label;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 132,
-            child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          Expanded(
-            child: Text(value, style: Theme.of(context).textTheme.bodyLarge),
           ),
         ],
       ),

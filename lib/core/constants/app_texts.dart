@@ -5,6 +5,7 @@ abstract final class AppTexts {
   static const offline = 'Hors-ligne';
   static const genericError = 'Une erreur est survenue. Réessayez.';
   static const save = 'Enregistrer';
+  static const retry = 'Réessayer';
 
   // === Lot 1 : Connexion ===
   static const phoneTitle = 'Votre numéro de téléphone';
@@ -74,13 +75,41 @@ abstract final class AppTexts {
   static const publishSuccess = 'Récolte publiée avec succès.';
   static const publishError = 'Impossible de publier la récolte. Réessayez.';
 
+  // === Produit : statut et détail (partagé producteur / acheteur) ===
+  static const syncPending = 'En attente d\'envoi';
+  static const syncPublished = 'Publié';
+  static const productDetailTitle = 'Détail du produit';
+  static const productLoadError = 'Impossible de charger ce produit.';
+  static const productNotFound = 'Produit introuvable.';
+  static const detailQuantity = 'Quantité';
+  static const detailHarvest = 'Récolte prévue';
+  static const detailLocation = 'Localisation';
+  static const detailPublishedOn = 'Publié le';
+
   // === Lot 3 : Mes produits ===
   static const myProductsTitle = 'Mes produits';
   static const publishFab = 'Publier';
+  static const myProductsLoadError = 'Impossible de charger vos produits.';
+  static const publishedCount = 'Produits publiés';
+  static const myProductsEmptyTitle = 'Aucun produit pour le moment';
+  static const myProductsEmptyBody = 'Vos récoltes publiées apparaîtront ici.';
+  static const publishFirst = 'Publier ma première récolte';
 
   // === Lot 4 : Acheteur ===
   static const harvestsTitle = 'Récoltes';
   static const searchTitle = 'Rechercher';
+  static const searchHint = 'Nom, variété, lieu ou producteur';
+  static const searchNoResult = 'Aucun résultat pour cette recherche.';
+  static const productsLoadError = 'Impossible de charger les produits.';
+  static const heroTitle = 'Mieux vivre, mieux vendre';
+  static const heroSubtitle = 'Des récoltes locales prêtes à partir.';
+  static const marketEmptyTitle = 'Aucune récolte disponible';
+  static const marketEmptyBody = 'Les produits publiés apparaîtront ici.';
+  static const call = 'Appeler';
+  static const whatsapp = 'WhatsApp';
+  static const contactError = 'Impossible d\'ouvrir l\'application.';
+  static String whatsappMessage(String productName) =>
+      'Bonjour, votre récolte de $productName sur FarmHub m\'intéresse.';
 
   // === Lot 5 : Profil ===
   static const profileTitle = 'Profil';
