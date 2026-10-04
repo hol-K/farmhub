@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_texts.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../../producer/providers.dart';
 import '../../producer/widgets/product_card.dart';
@@ -57,7 +58,9 @@ class ProductListScreen extends ConsumerWidget {
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                               child: ProductCard(
                                 product: items[index],
-                                onTap: () => context.push('/buyer/product/${items[index].id}'),
+                                onTap: () => context.push(
+                                  '/buyer/product/${items[index].id}',
+                                ),
                               ),
                             ),
                             childCount: items.length,
@@ -107,9 +110,8 @@ class _HeroBanner extends StatelessWidget {
                 const SizedBox(height: 8),
                 Text(
                   'Des récoltes locales prêtes à partir.',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Colors.white.withValues(alpha: 0.9),
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium
+                      ?.copyWith(color: Colors.white.withValues(alpha: 0.9)),
                 ),
               ],
             ),
@@ -140,7 +142,11 @@ class _EmptyMarket extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.storefront_outlined, size: 48, color: Theme.of(context).colorScheme.primary),
+            Icon(
+              Icons.storefront_outlined,
+              size: 48,
+              color: Theme.of(context).colorScheme.primary,
+            ),
             const SizedBox(height: 16),
             Text(
               'Aucune récolte disponible',
@@ -148,7 +154,10 @@ class _EmptyMarket extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            const Text('Les produits publiés apparaîtront ici.', textAlign: TextAlign.center),
+            const Text(
+              'Les produits publiés apparaîtront ici.',
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

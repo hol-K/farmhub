@@ -7,7 +7,6 @@ abstract final class AppTexts {
   static const offline = 'Hors-ligne';
   static const genericError = 'Une erreur est survenue. Réessayez.';
   static const save = 'Enregistrer';
-  static const detail = 'Détail';
 
   // === Lot 1 : Connexion ===
   static const phoneTitle = 'Votre numéro de téléphone';
@@ -33,9 +32,7 @@ abstract final class AppTexts {
   static const errTooManyRequests = 'Trop d\'essais. Réessayez plus tard.';
   static const errNetwork = 'Pas de connexion internet.';
 
- 
-    // === Lot 2 : Publication ===
-
+  // === Lot 2 : Publication ===
   static const publishTitle = 'Publier une récolte';
   static const productName = 'Nom du produit';
   static const productNameHint = 'Ex. Tomate';
@@ -70,16 +67,13 @@ abstract final class AppTexts {
 
   // Messages photo
   static const photoRequired = 'Ajoutez une photo du produit.';
-  static const photoCompressionError =
-      'Impossible de compresser la photo.';
-  static const photoSelectionError =
-      'Impossible de sélectionner la photo.';
+  static const photoCompressionError = 'Impossible de compresser la photo.';
+  static const photoSelectionError = 'Impossible de sélectionner la photo.';
 
   // Messages de publication
   static const publishSuccess = 'Récolte publiée avec succès.';
-  static const publishError =
-      'Impossible de publier la récolte. Réessayez.';
-      
+  static const publishError = 'Impossible de publier la récolte. Réessayez.';
+
   // === Lot 3 : Mes produits ===
   static const myProductsTitle = 'Mes produits';
   static const myProductsPlaceholder = 'À faire — Lot 3\n(voir un détail)';
@@ -108,8 +102,8 @@ abstract final class AppTexts {
   static const profileUnavailable = 'Profil indisponible. Réessayez plus tard.';
 
   static String roleLabelFor(String roleName) => switch (roleName) {
-        'producer' => roleProducer,
-        'buyer' => roleBuyer,
-        _ => roleName,
-      };
+    'producer' => roleProducer,
+    'buyer' => roleBuyer,
+    _ => roleName,
+  };
 }

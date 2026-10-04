@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../core/constants/app_texts.dart';
 import '../../../core/providers/connectivity_provider.dart';
 import '../providers.dart';
 import '../widgets/product_card.dart';
@@ -114,9 +115,8 @@ class _SummaryCard extends StatelessWidget {
                 children: [
                   Text(
                     'Produits publiés',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.grey.shade700,
-                    ),
+                    style: Theme.of(context).textTheme.bodyMedium
+                        ?.copyWith(color: Colors.grey.shade700),
                   ),
                   const SizedBox(height: 4),
                   Text(
