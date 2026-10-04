@@ -35,54 +35,84 @@ class _ProfileChoiceScreenState extends ConsumerState<ProfileChoiceScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(AppTheme.spacing * 1.5),
-          children: [
-            const SizedBox(height: 32),
-            Text(AppTexts.roleTitle, style: theme.textTheme.headlineSmall),
-            const SizedBox(height: 24),
-            Form(
-              key: _formKey,
-              child: TextFormField(
-                controller: _name,
-                textCapitalization: TextCapitalization.words,
-                style: const TextStyle(fontSize: 20),
-                decoration: const InputDecoration(
-                  labelText: AppTexts.nameLabel,
-                  prefixIcon: Icon(Icons.person),
-                ),
-                validator: (v) =>
-                    (v == null || v.trim().isEmpty) ? AppTexts.nameRequired : null,
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFF5FAF5), Color(0xFFE5F5E7)],
+          ),
+        ),
+        child: SafeArea(
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 420),
+              child: ListView(
+                padding: const EdgeInsets.all(AppTheme.spacing * 1.5),
+                children: [
+                  const SizedBox(height: 18),
+                  Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(AppTexts.roleTitle, style: theme.textTheme.headlineSmall),
+                          const SizedBox(height: 16),
+                          Form(
+                            key: _formKey,
+                            child: TextFormField(
+                              controller: _name,
+                              textCapitalization: TextCapitalization.words,
+                              style: const TextStyle(fontSize: 20),
+                              decoration: InputDecoration(
+                                labelText: AppTexts.nameLabel,
+                                prefixIcon: const Icon(Icons.person_outline_rounded),
+                                filled: true,
+                                fillColor: Colors.white,
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(18),
+                                  borderSide: BorderSide(color: Colors.green.shade200),
+                                ),
+                              ),
+                              validator: (v) =>
+                                  (v == null || v.trim().isEmpty) ? AppTexts.nameRequired : null,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          _RoleButton(
+                            icon: Icons.agriculture_rounded,
+                            label: AppTexts.iAmProducer,
+                            onPressed: auth.loading ? null : () => _choose(UserRole.producer),
+                          ),
+                          const SizedBox(height: AppTheme.spacing),
+                          _RoleButton(
+                            icon: Icons.storefront_rounded,
+                            label: AppTexts.iAmBuyer,
+                            onPressed: auth.loading ? null : () => _choose(UserRole.buyer),
+                          ),
+                          if (auth.loading)
+                            const Padding(
+                              padding: EdgeInsets.only(top: 24),
+                              child: Center(child: CircularProgressIndicator()),
+                            ),
+                          if (auth.error != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: AppTheme.spacing),
+                              child: Text(
+                                auth.error!,
+                                style: TextStyle(color: theme.colorScheme.error),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 32),
-            _RoleButton(
-              icon: Icons.agriculture,
-              label: AppTexts.iAmProducer,
-              onPressed: auth.loading ? null : () => _choose(UserRole.producer),
-            ),
-            const SizedBox(height: AppTheme.spacing),
-            _RoleButton(
-              icon: Icons.storefront,
-              label: AppTexts.iAmBuyer,
-              onPressed: auth.loading ? null : () => _choose(UserRole.buyer),
-            ),
-            if (auth.loading)
-              const Padding(
-                padding: EdgeInsets.only(top: 24),
-                child: Center(child: CircularProgressIndicator()),
-              ),
-            if (auth.error != null)
-              Padding(
-                padding: const EdgeInsets.only(top: AppTheme.spacing),
-                child: Text(
-                  auth.error!,
-                  style: TextStyle(color: theme.colorScheme.error),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-          ],
+          ),
         ),
       ),
     );
