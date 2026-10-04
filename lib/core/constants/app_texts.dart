@@ -1,5 +1,3 @@
-/// Tous les textes affichés dans l'app.
-/// Chaque lot ajoute ses textes dans SA section. Dev 5 relit et harmonise.
 abstract final class AppTexts {
   // === Commun ===
   static const appName = 'FarmHub';
