@@ -21,6 +21,7 @@ class MyProductsScreen extends ConsumerWidget {
         title: const Text(AppTexts.myProductsTitle),
         actions: [
           IconButton(
+            tooltip: AppTexts.profileTitle,
             icon: const Icon(Icons.person_outline_rounded),
             onPressed: () => context.push('/profile'),
           ),
@@ -32,7 +33,7 @@ class MyProductsScreen extends ConsumerWidget {
           Expanded(
             child: products.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => Center(
+              error: (_, _) => Center(
                 child: Padding(
                   padding: const EdgeInsets.all(24),
                   child: Column(
@@ -40,10 +41,10 @@ class MyProductsScreen extends ConsumerWidget {
                     children: [
                       const Icon(Icons.error_outline, size: 40),
                       const SizedBox(height: 12),
-                      const Text('Impossible de charger vos produits.'),
+                      const Text(AppTexts.myProductsLoadError),
                       TextButton(
                         onPressed: () => ref.invalidate(myProductsProvider),
-                        child: const Text('Réessayer'),
+                        child: const Text(AppTexts.retry),
                       ),
                     ],
                   ),
@@ -114,7 +115,7 @@ class _SummaryCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Produits publiés',
+                    AppTexts.publishedCount,
                     style: Theme.of(context).textTheme.bodyMedium
                         ?.copyWith(color: Colors.grey.shade700),
                   ),
@@ -151,14 +152,20 @@ class _EmptyProducts extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucun produit pour le moment',
+              AppTexts.myProductsEmptyTitle,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
             const Text(
-              'Vos récoltes publiées apparaîtront ici.',
+              AppTexts.myProductsEmptyBody,
               textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            FilledButton.icon(
+              onPressed: () => context.push('/producer/publish'),
+              icon: const Icon(Icons.add),
+              label: const Text(AppTexts.publishFirst),
             ),
           ],
         ),

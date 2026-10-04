@@ -21,10 +21,12 @@ class ProductListScreen extends ConsumerWidget {
         title: const Text(AppTexts.harvestsTitle),
         actions: [
           IconButton(
+            tooltip: AppTexts.searchTitle,
             icon: const Icon(Icons.search_rounded),
             onPressed: () => context.push('/buyer/search'),
           ),
           IconButton(
+            tooltip: AppTexts.profileTitle,
             icon: const Icon(Icons.person_outline_rounded),
             onPressed: () => context.push('/profile'),
           ),
@@ -36,19 +38,19 @@ class ProductListScreen extends ConsumerWidget {
           Expanded(
             child: products.when(
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (error, stack) => const Center(
+              error: (_, _) => const Center(
                 child: Padding(
                   padding: EdgeInsets.all(24),
-                  child: Text('Impossible de charger les produits.'),
+                  child: Text(AppTexts.productsLoadError),
                 ),
               ),
               data: (items) => items.isEmpty
                   ? const _EmptyMarket()
                   : CustomScrollView(
                       slivers: [
-                        SliverToBoxAdapter(
+                        const SliverToBoxAdapter(
                           child: Padding(
-                            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                            padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
                             child: _HeroBanner(),
                           ),
                         ),
@@ -58,6 +60,7 @@ class ProductListScreen extends ConsumerWidget {
                               padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
                               child: ProductCard(
                                 product: items[index],
+                                showSync: false,
                                 onTap: () => context.push(
                                   '/buyer/product/${items[index].id}',
                                 ),
@@ -101,7 +104,7 @@ class _HeroBanner extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Mieux vivre, mieux vendre',
+                  AppTexts.heroTitle,
                   style: Theme.of(context).textTheme.titleLarge?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w700,
@@ -109,7 +112,7 @@ class _HeroBanner extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Des récoltes locales prêtes à partir.',
+                  AppTexts.heroSubtitle,
                   style: Theme.of(context).textTheme.bodyMedium
                       ?.copyWith(color: Colors.white.withValues(alpha: 0.9)),
                 ),
@@ -149,15 +152,12 @@ class _EmptyMarket extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              'Aucune récolte disponible',
+              AppTexts.marketEmptyTitle,
               style: Theme.of(context).textTheme.titleLarge,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            const Text(
-              'Les produits publiés apparaîtront ici.',
-              textAlign: TextAlign.center,
-            ),
+            const Text(AppTexts.marketEmptyBody, textAlign: TextAlign.center),
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/constants/app_texts.dart';
 import '../../../core/theme/app_theme.dart';
 
 class SyncBadge extends StatelessWidget {
@@ -17,7 +18,7 @@ class SyncBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        pending ? 'En attente d\'envoi' : 'Publié',
+        pending ? AppTexts.syncPending : AppTexts.syncPublished,
         style: TextStyle(
           color: color,
           fontSize: 13,
@@ -42,7 +43,7 @@ class OfflineBanner extends StatelessWidget {
           Icon(Icons.cloud_off, color: Colors.white, size: 20),
           SizedBox(width: 8),
           Text(
-            'Hors-ligne',
+            AppTexts.offline,
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
           ),
         ],
