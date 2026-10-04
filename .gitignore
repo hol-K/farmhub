@@ -56,3 +56,6 @@ lib/firebase_options.dart
 .claude/settings.local.json
 .firebase/
 PROJET.md
+
+# Réglages personnels de l'éditeur
+.vscode/
