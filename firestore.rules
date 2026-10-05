@@ -11,11 +11,15 @@ service cloud.firestore {
     // modifiable uniquement par son propriétaire. Le téléphone doit être celui du compte.
     match /users/{uid} {
       allow read: if signedIn();
-      allow create, update: if signedIn()
+        allow create: if signedIn()
         && request.auth.uid == uid
         && request.resource.data.phone == request.auth.token.phone_number
         && request.resource.data.role in ['producer', 'buyer'];
-      allow delete: if false;
+      // Après création, seul le nom est modifiable (rôle et téléphone figés).
+      allow update: if signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name']);
+
     }
 
     // Produits : lisibles par tout utilisateur connecté,
