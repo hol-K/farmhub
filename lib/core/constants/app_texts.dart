@@ -112,6 +112,11 @@ abstract final class AppTexts {
   static const searchTitle = 'Rechercher';
   static const searchHint = 'Nom, variété, lieu ou producteur';
   static const searchNoResult = 'Aucun résultat pour cette recherche.';
+  static const maxPrice = 'Prix max';
+  static const allUnits = 'Tout';
+  static const sortRecent = 'Plus récents';
+  static const sortPriceAsc = 'Prix croissant';
+  static const sortPriceDesc = 'Prix décroissant';
   static const productsLoadError = 'Impossible de charger les produits.';
   static const heroTitle = 'Mieux vivre, mieux vendre';
   static const heroSubtitle = 'Des récoltes locales prêtes à partir.';

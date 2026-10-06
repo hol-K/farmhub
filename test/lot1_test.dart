@@ -69,5 +69,17 @@ void main() {
     expect(filterProductsByQuery(products, 'rouge'), [products[1]]);
     expect(filterProductsByQuery(products, 'parakou'), [products[0]]);
     expect(filterProductsByQuery(products, 'maïs'), isEmpty);
+
+    // Filtres unité / prix max et tri.
+    expect(applyBuyerFilters(products, maxPrice: 2500), [products[0]]);
+    expect(applyBuyerFilters(products, unit: 'sac'), isEmpty);
+    expect(
+      applyBuyerFilters(products, sort: ProductSort.priceDesc),
+      [products[1], products[0]],
+    );
+    expect(
+      applyBuyerFilters(products, sort: ProductSort.priceAsc),
+      [products[0], products[1]],
+    );
   });
 }
