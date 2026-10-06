@@ -72,7 +72,7 @@ class ProductDetailScreen extends ConsumerWidget {
                     ),
                     DetailRow(
                       label: AppTexts.minimumPrice,
-                      value: item.minPrice.fcfa,
+                      value: item.priceLabel,
                     ),
                     DetailRow(
                       label: AppTexts.detailHarvest,

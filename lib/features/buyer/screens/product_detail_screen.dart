@@ -62,7 +62,7 @@ class _Details extends StatelessWidget {
         ],
         const SizedBox(height: 8),
         Text(
-          product.minPrice.fcfa,
+          product.priceLabel,
           style: theme.textTheme.titleLarge?.copyWith(
             color: theme.colorScheme.primary,
           ),

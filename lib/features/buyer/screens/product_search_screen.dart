@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
+import '../../../core/constants/countries.dart';
+import '../../../core/providers/auth_provider.dart';
 import '../../producer/providers.dart';
 import '../../producer/widgets/product_card.dart';
 import '../product_filters.dart';
@@ -33,6 +35,9 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final products = ref.watch(allProductsProvider);
+    final currency = Countries.fromPhone(
+      ref.watch(authProvider).value?.phone ?? '',
+    ).currency;
 
     return Scaffold(
       appBar: AppBar(title: const Text(AppTexts.searchTitle)),
@@ -66,9 +71,9 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
                     controller: _maxPrice,
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       labelText: AppTexts.maxPrice,
-                      suffixText: AppTexts.fcfa,
+                      suffixText: currencySymbols[currency],
                     ),
                     onChanged: (_) => setState(() {}),
                   ),
@@ -120,6 +125,7 @@ class _ProductSearchScreenState extends ConsumerState<ProductSearchScreen> {
                   unit: _unit,
                   maxPrice: int.tryParse(_maxPrice.text),
                   sort: _sort,
+                  currency: currency,
                 );
                 if (results.isEmpty) {
                   return const Center(child: Text(AppTexts.searchNoResult));

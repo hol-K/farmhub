@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../../../core/utils/extensions.dart';
+
 /// Récolte publiée (collection products/{id}). Modèle partagé producteur / acheteur.
 class Product {
   const Product({
@@ -12,6 +14,7 @@ class Product {
     required this.quantity,
     required this.unit,
     required this.minPrice,
+    this.currency = 'XOF',
     required this.harvestDate,
     required this.address,
     this.photoUrl,
@@ -29,8 +32,14 @@ class Product {
   final num quantity;
   final String unit;
 
-  /// Prix minimum en FCFA.
+  /// Prix minimum, dans [currency].
   final int minPrice;
+
+  /// Monnaie du producteur (code ISO, XOF = FCFA), fixée à la publication.
+  final String currency;
+
+  /// « 15 000 FCFA », « 5 000 ₦ »…
+  String get priceLabel => minPrice.money(currency);
   final DateTime harvestDate;
 
   /// Texte libre (village, marché…). Pas de GPS.
@@ -60,6 +69,8 @@ class Product {
       quantity: d['quantity'] as num? ?? 0,
       unit: d['unit'] as String? ?? '',
       minPrice: (d['minPrice'] as num? ?? 0).toInt(),
+      // Produits publiés avant le choix du pays : tous au Bénin, en FCFA.
+      currency: d['currency'] as String? ?? 'XOF',
       harvestDate: (d['harvestDate'] as Timestamp?)?.toDate() ?? DateTime.now(),
       address: d['address'] as String? ?? '',
       photoUrl: d['photoUrl'] as String?,
@@ -87,6 +98,7 @@ class Product {
         'producerName': producerName,
         'producerPhone': producerPhone,
         'photoUrl': photoUrl,
+        'currency': currency,
         'sold': sold,
         'createdAt': FieldValue.serverTimestamp(),
       };

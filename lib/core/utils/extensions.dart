@@ -1,11 +1,14 @@
 import 'package:intl/intl.dart';
 
+import '../constants/countries.dart';
+
 final _thousands = NumberFormat.decimalPattern('fr');
 final _date = DateFormat('dd/MM/yyyy');
 
 extension PriceFormat on num {
-  /// 15000 → « 15 000 FCFA »
-  String get fcfa => '${_thousands.format(this)} FCFA';
+  /// (15000, 'XOF') → « 15 000 FCFA » ; (5000, 'NGN') → « 5 000 ₦ ».
+  String money(String currency) =>
+      '${_thousands.format(this)} ${currencySymbols[currency] ?? currency}';
 }
 
 extension DateFormatFr on DateTime {

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_texts.dart';
+import '../../../core/constants/countries.dart';
 import '../../../core/theme/app_theme.dart';
 import '../providers.dart';
 import '../widgets/phone_input_field.dart';
@@ -17,6 +18,7 @@ class PhoneInputScreen extends ConsumerStatefulWidget {
 class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
   final _formKey = GlobalKey<FormState>();
   final _phone = TextEditingController();
+  var _country = Countries.benin;
 
   @override
   void dispose() {
@@ -26,7 +28,7 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
 
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    ref.read(phoneAuthProvider.notifier).sendCode(_phone.text);
+    ref.read(phoneAuthProvider.notifier).sendCode(_country.toE164(_phone.text)!);
   }
 
   @override
@@ -106,7 +108,12 @@ class _PhoneInputScreenState extends ConsumerState<PhoneInputScreen> {
                   const SizedBox(height: 12),
                   Form(
                     key: _formKey,
-                    child: PhoneInputField(controller: _phone, onSubmitted: (_) => _submit()),
+                    child: PhoneInputField(
+                      controller: _phone,
+                      country: _country,
+                      onCountryChanged: (c) => setState(() => _country = c),
+                      onSubmitted: (_) => _submit(),
+                    ),
                   ),
                   const SizedBox(height: 24),
                   FilledButton(

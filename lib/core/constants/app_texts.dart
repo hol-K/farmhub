@@ -11,6 +11,9 @@ abstract final class AppTexts {
   static const phoneTitle = 'Votre numéro de téléphone';
   static const phoneHint = '01 XX XX XX XX';
   static const phoneInvalid = 'Numéro invalide (10 chiffres, commence par 01)';
+  static const phoneHintOther = 'Votre numéro';
+  static String phoneInvalidFor(String country) => 'Numéro invalide pour : $country';
+  static const country = 'Pays';
   static const sendCode = 'Recevoir le code';
 
   static const otpTitle = 'Code reçu par SMS';
@@ -42,7 +45,6 @@ abstract final class AppTexts {
   static const unit = 'Unité';
   static const minimumPrice = 'Prix minimum';
   static const minimumPriceHint = 'Ex. 15000';
-  static const fcfa = 'FCFA';
   static const harvestDate = 'Date de récolte';
   static const address = 'Adresse';
   static const addressHint = 'Village, commune, point de repère';

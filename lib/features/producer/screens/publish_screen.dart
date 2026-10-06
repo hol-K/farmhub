@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_texts.dart';
+import '../../../core/constants/countries.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/services/firebase_service.dart';
 import '../models/product.dart';
@@ -27,7 +28,12 @@ class PublishScreen extends ConsumerWidget {
       ),
       body: SafeArea(
         child: id == null
-            ? _formList(ProductForm(onSubmit: (data) => _publish(context, ref, data)))
+            ? _formList(ProductForm(
+                currency: Countries.fromPhone(
+                  ref.watch(authProvider).value?.phone ?? '',
+                ).currency,
+                onSubmit: (data) => _publish(context, ref, data),
+              ))
             : ref.watch(productProvider(id)).when(
                   loading: () => const Center(child: CircularProgressIndicator()),
                   error: (_, _) => const Center(child: Text(AppTexts.productLoadError)),
@@ -60,6 +66,8 @@ class PublishScreen extends ConsumerWidget {
         quantity: data.quantity,
         unit: data.unit,
         minPrice: data.minPrice,
+        // Monnaie du pays du producteur (sert à la création ; non modifiable ensuite).
+        currency: Countries.fromPhone(producerPhone).currency,
         harvestDate: data.harvestDate,
         address: data.address,
       );

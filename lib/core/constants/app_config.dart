@@ -1,9 +1,6 @@
 /// Valeurs de configuration de l'app (pas de texte affiché ici : voir app_texts.dart).
 abstract final class AppConfig {
-  // Téléphone (Bénin, numérotation à 10 chiffres depuis fin 2024 : 01XXXXXXXX).
-  static const countryCode = '+229';
-  static const phoneLength = 10;
-  static final phonePattern = RegExp(r'^01\d{8}$');
+  // Téléphone : pays et formats dans countries.dart.
   static const otpLength = 6;
   static const otpTimeout = Duration(seconds: 60);
 

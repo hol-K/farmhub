@@ -1,18 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
+import '../../../core/constants/countries.dart';
 
-/// null si [value] est un numéro béninois valide (10 chiffres, commence par 01).
-String? validateBeninPhone(String? value) =>
-    AppConfig.phonePattern.hasMatch(value ?? '') ? null : AppTexts.phoneInvalid;
+/// null si [value] est un numéro valide pour [country].
+String? validatePhone(Country country, String? value) {
+  if (country.toE164(value) != null) return null;
+  return country == Countries.benin
+      ? AppTexts.phoneInvalid
+      : AppTexts.phoneInvalidFor(country.name);
+}
 
-/// Champ numéro de téléphone avec l'indicatif +229 affiché devant.
+/// Champ numéro de téléphone, avec le choix du pays (drapeau + indicatif) devant.
 class PhoneInputField extends StatelessWidget {
-  const PhoneInputField({super.key, required this.controller, this.onSubmitted});
+  const PhoneInputField({
+    super.key,
+    required this.controller,
+    required this.country,
+    required this.onCountryChanged,
+    this.onSubmitted,
+  });
 
   final TextEditingController controller;
+  final Country country;
+  final ValueChanged<Country> onCountryChanged;
   final ValueChanged<String>? onSubmitted;
 
   @override
@@ -23,13 +35,42 @@ class PhoneInputField extends StatelessWidget {
       keyboardType: TextInputType.phone,
       textInputAction: TextInputAction.done,
       style: const TextStyle(fontSize: 22, letterSpacing: 1.4),
-      maxLength: AppConfig.phoneLength,
+      maxLength: country.maxInputLength,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       autofillHints: const [AutofillHints.telephoneNumberNational],
       decoration: InputDecoration(
-        prefixText: '${AppConfig.countryCode} ',
-        hintText: AppTexts.phoneHint,
-        prefixIcon: const Icon(Icons.phone_android_rounded),
+        hintText: country == Countries.benin
+            ? AppTexts.phoneHint
+            : AppTexts.phoneHintOther,
+        prefixIcon: Padding(
+          padding: const EdgeInsets.only(left: 12, right: 4),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<Country>(
+              value: country,
+              tooltip: AppTexts.country,
+              onChanged: (c) {
+                if (c != null) onCountryChanged(c);
+              },
+              // Fermé : drapeau + indicatif. Ouvert : nom complet.
+              selectedItemBuilder: (_) => [
+                for (final c in Countries.all)
+                  Center(
+                    child: Text(
+                      '${c.flag} ${c.dialCode}',
+                      style: const TextStyle(fontSize: 18),
+                    ),
+                  ),
+              ],
+              items: [
+                for (final c in Countries.all)
+                  DropdownMenuItem(
+                    value: c,
+                    child: Text('${c.flag}  ${c.name}  ${c.dialCode}'),
+                  ),
+              ],
+            ),
+          ),
+        ),
         counterText: '',
         filled: true,
         fillColor: Colors.white,
@@ -46,7 +87,7 @@ class PhoneInputField extends StatelessWidget {
           borderSide: const BorderSide(color: Color(0xFF2E7D32), width: 2),
         ),
       ),
-      validator: validateBeninPhone,
+      validator: (v) => validatePhone(country, v),
       onFieldSubmitted: onSubmitted,
     );
   }

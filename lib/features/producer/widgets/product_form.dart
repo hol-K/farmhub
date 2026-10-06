@@ -7,6 +7,7 @@ import 'package:image_picker/image_picker.dart';
 
 import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
+import '../../../core/constants/countries.dart';
 import '../../../core/utils/extensions.dart';
 import '../../../core/utils/validators.dart';
 import '../models/product.dart';
@@ -37,12 +38,20 @@ class ProductFormData {
 }
 
 class ProductForm extends StatefulWidget {
-  const ProductForm({super.key, required this.onSubmit, this.initial});
+  const ProductForm({
+    super.key,
+    required this.onSubmit,
+    this.initial,
+    this.currency = 'XOF',
+  });
 
   final Future<void> Function(ProductFormData data) onSubmit;
 
   /// Produit à modifier : préremplit le formulaire, photo facultative.
   final Product? initial;
+
+  /// Monnaie du producteur (création). En modification : celle du produit.
+  final String currency;
 
   @override
   State<ProductForm> createState() => _ProductFormState();
@@ -310,10 +319,10 @@ class _ProductFormState extends State<ProductForm> {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             textInputAction: TextInputAction.next,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: AppTexts.minimumPrice,
               hintText: AppTexts.minimumPriceHint,
-              suffixText: AppTexts.fcfa,
+              suffixText: currencySymbols[widget.initial?.currency ?? widget.currency],
             ),
             validator: Validators.minimumPrice,
           ),

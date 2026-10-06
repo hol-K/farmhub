@@ -48,9 +48,9 @@ class PhoneAuthController extends Notifier<PhoneAuthState> {
   @override
   PhoneAuthState build() => const PhoneAuthState();
 
-  /// [localNumber] : 10 chiffres, sans l'indicatif (ex. 0197000000).
-  Future<void> sendCode(String localNumber) async {
-    state = PhoneAuthState(loading: true, phone: AppConfig.countryCode + localNumber);
+  /// [phone] : numéro complet avec indicatif (ex. +2290197000000), voir Country.toE164.
+  Future<void> sendCode(String phone) async {
+    state = PhoneAuthState(loading: true, phone: phone);
     await _verify();
   }
 
