@@ -3,8 +3,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'core/constants/app_texts.dart';
+import 'core/providers/onboarding_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'firebase_options.dart'; // généré par `flutterfire configure` (voir README)
 import 'router/app_router.dart';
@@ -17,7 +19,12 @@ Future<void> main() async {
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  runApp(const ProviderScope(child: FarmHubApp()));
+  // Lu avant runApp : le router sait tout de suite s'il faut montrer l'onboarding.
+  final prefs = await SharedPreferences.getInstance();
+  runApp(ProviderScope(
+    overrides: [prefsProvider.overrideWithValue(prefs)],
+    child: const FarmHubApp(),
+  ));
 }
 
 class FarmHubApp extends ConsumerWidget {

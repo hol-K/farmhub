@@ -7,6 +7,22 @@ abstract final class AppTexts {
   static const save = 'Enregistrer';
   static const retry = 'Réessayer';
 
+  // === Onboarding (premier lancement) ===
+  static const skip = 'Passer';
+  static const next = 'Suivant';
+  static const start = 'Commencer';
+  static const onboarding1Title = 'Vendez votre récolte directement';
+  static const onboarding1Body =
+      'Producteur : publiez votre récolte en une minute, avec photo, quantité et prix. '
+      'Même sans internet, l\'envoi se fait dès le retour du réseau.';
+  static const onboarding2Title = 'Trouvez les récoltes près de vous';
+  static const onboarding2Body =
+      'Acheteur : cherchez par produit, lieu ou prix, et voyez ce qui est disponible maintenant.';
+  static const onboarding3Title = 'Traitez sans intermédiaire';
+  static const onboarding3Body =
+      'Appelez ou écrivez au producteur sur WhatsApp en un geste. '
+      'Il fixe son prix, vous discutez en direct.';
+
   // === Lot 1 : Connexion ===
   static const phoneTitle = 'Votre numéro de téléphone';
   static const phoneHint = '01 XX XX XX XX';

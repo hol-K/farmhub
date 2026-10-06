@@ -4,6 +4,7 @@
 // profils ont déjà été créés (producteur / acheteur). Aucune donnée n'est modifiée.
 
 import 'package:farmhub/core/constants/app_texts.dart';
+import 'package:farmhub/core/providers/onboarding_provider.dart';
 import 'package:farmhub/firebase_options.dart';
 import 'package:farmhub/main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -12,16 +13,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 const producerPhone = '0165656655';
 const buyerPhone = '0160601122';
 const testCode = '123456';
+
+late SharedPreferences prefs;
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
   setUpAll(() async {
     await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+    prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('onboardingDone', true); // onboarding testé à part
     // Numéros de test uniquement : saute reCAPTCHA / Play Integrity.
     await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
   });
@@ -53,7 +59,10 @@ void main() {
 }
 
 Future<void> _login(WidgetTester tester, String phone) async {
-  await tester.pumpWidget(const ProviderScope(child: FarmHubApp()));
+  await tester.pumpWidget(ProviderScope(
+    overrides: [prefsProvider.overrideWithValue(prefs)],
+    child: const FarmHubApp(),
+  ));
   await _waitFor(tester, find.text(AppTexts.sendCode));
 
   await tester.enterText(find.byType(TextFormField), phone);

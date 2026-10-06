@@ -55,6 +55,18 @@ void main() {
     expect(r('/producer/product/x/edit', role: UserRole.buyer), '/buyer');
     expect(r('/buyer/product/x', role: UserRole.producer), '/producer');
     expect(r('/profile', role: UserRole.buyer), isNull);
+
+    // Onboarding : premier lancement, déconnecté uniquement.
+    String? first(String loc, {bool signedIn = false}) => authRedirect(
+          loc,
+          loading: false,
+          signedIn: signedIn,
+          role: UserRole.buyer,
+          onboarded: false,
+        );
+    expect(first('/login'), '/onboarding');
+    expect(first('/onboarding'), isNull);
+    expect(first('/buyer', signedIn: true), isNull);
   });
 
   test('format prix', () {

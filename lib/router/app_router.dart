@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/providers/auth_provider.dart';
+import '../core/providers/onboarding_provider.dart';
 import '../features/auth/screens/otp_screen.dart';
 import '../features/auth/screens/phone_input_screen.dart';
 import '../features/auth/screens/profile_choice_screen.dart';
 import '../features/buyer/screens/product_detail_screen.dart' as buyer;
 import '../features/buyer/screens/product_list_screen.dart';
 import '../features/buyer/screens/product_search_screen.dart';
+import '../features/onboarding/onboarding_screen.dart';
 import '../features/producer/screens/my_products_screen.dart';
 import '../features/producer/screens/product_detail_screen.dart' as producer;
 import '../features/producer/screens/publish_screen.dart';
@@ -23,9 +25,14 @@ String? authRedirect(
   required bool loading,
   required bool signedIn,
   required UserRole? role,
+  bool onboarded = true,
 }) {
   if (loading) return location == '/' ? null : '/';
-  if (!signedIn) return _authRoutes.contains(location) ? null : '/login';
+  if (!signedIn) {
+    // Onboarding : seulement au premier lancement, avant la connexion.
+    if (!onboarded) return location == '/onboarding' ? null : '/onboarding';
+    return _authRoutes.contains(location) ? null : '/login';
+  }
   if (role == null) return location == '/role' ? null : '/role';
 
   final home = role == UserRole.producer ? '/producer' : '/buyer';
@@ -43,6 +50,7 @@ final routerProvider = Provider<GoRouter>((ref) {
   final refresh = ValueNotifier(0);
   ref.listen(authStateProvider, (_, _) => refresh.value++);
   ref.listen(authProvider, (_, _) => refresh.value++);
+  ref.listen(onboardingProvider, (_, _) => refresh.value++);
   ref.onDispose(refresh.dispose);
 
   return GoRouter(
@@ -57,6 +65,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         loading: user.isLoading || (signedIn && profile.isLoading),
         signedIn: signedIn,
         role: profile.value?.role,
+        onboarded: ref.read(onboardingProvider),
       );
     },
     routes: [
@@ -65,6 +74,7 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/',
         builder: (_, _) => const Scaffold(body: Center(child: CircularProgressIndicator())),
       ),
+      GoRoute(path: '/onboarding', builder: (_, _) => const OnboardingScreen()),
       GoRoute(path: '/login', builder: (_, _) => const PhoneInputScreen()),
       GoRoute(path: '/otp', builder: (_, _) => const OtpScreen()),
       GoRoute(path: '/role', builder: (_, _) => const ProfileChoiceScreen()),
