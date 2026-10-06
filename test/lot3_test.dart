@@ -18,6 +18,25 @@ void main() {
     expect(find.text('Publié'), findsOneWidget);
   });
 
+  testWidgets('« Vendu » remplace « Publié », l\'attente d\'envoi reste prioritaire', (
+    tester,
+  ) async {
+    await tester.pumpWidget(
+      const _TestApp(
+        child: Column(
+          children: [
+            SyncBadge(pending: false, sold: true),
+            SyncBadge(pending: true, sold: true),
+          ],
+        ),
+      ),
+    );
+
+    expect(find.text('Vendu'), findsOneWidget);
+    expect(find.text("En attente d'envoi"), findsOneWidget);
+    expect(find.text('Publié'), findsNothing);
+  });
+
   testWidgets('affiche le bandeau hors-ligne', (tester) async {
     await tester.pumpWidget(const _TestApp(child: OfflineBanner()));
 

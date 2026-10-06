@@ -29,6 +29,8 @@ void main() {
     expect(r('/otp', role: UserRole.buyer), '/buyer');
     expect(r('/producer/publish', role: UserRole.producer), isNull);
     expect(r('/producer/publish', role: UserRole.buyer), '/buyer');
+    expect(r('/producer/product/x/edit', role: UserRole.producer), isNull);
+    expect(r('/producer/product/x/edit', role: UserRole.buyer), '/buyer');
     expect(r('/buyer/product/x', role: UserRole.producer), '/producer');
     expect(r('/profile', role: UserRole.buyer), isNull);
   });
