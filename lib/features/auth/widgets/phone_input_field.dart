@@ -44,30 +44,32 @@ class PhoneInputField extends StatelessWidget {
             : AppTexts.phoneHintOther,
         prefixIcon: Padding(
           padding: const EdgeInsets.only(left: 12, right: 4),
-          child: DropdownButtonHideUnderline(
-            child: DropdownButton<Country>(
-              value: country,
-              tooltip: AppTexts.country,
-              onChanged: (c) {
-                if (c != null) onCountryChanged(c);
-              },
-              // Fermé : drapeau + indicatif. Ouvert : nom complet.
-              selectedItemBuilder: (_) => [
-                for (final c in Countries.all)
-                  Center(
-                    child: Text(
-                      '${c.flag} ${c.dialCode}',
-                      style: const TextStyle(fontSize: 18),
+          child: Tooltip(
+            message: AppTexts.country,
+            child: DropdownButtonHideUnderline(
+              child: DropdownButton<Country>(
+                value: country,
+                onChanged: (c) {
+                  if (c != null) onCountryChanged(c);
+                },
+                // Fermé : drapeau + indicatif. Ouvert : nom complet.
+                selectedItemBuilder: (_) => [
+                  for (final c in Countries.all)
+                    Center(
+                      child: Text(
+                        '${c.flag} ${c.dialCode}',
+                        style: const TextStyle(fontSize: 18),
+                      ),
                     ),
-                  ),
-              ],
-              items: [
-                for (final c in Countries.all)
-                  DropdownMenuItem(
-                    value: c,
-                    child: Text('${c.flag}  ${c.name}  ${c.dialCode}'),
-                  ),
-              ],
+                ],
+                items: [
+                  for (final c in Countries.all)
+                    DropdownMenuItem(
+                      value: c,
+                      child: Text('${c.flag}  ${c.name}  ${c.dialCode}'),
+                    ),
+                ],
+              ),
             ),
           ),
         ),
