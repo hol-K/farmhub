@@ -9,8 +9,11 @@ import '../../../core/constants/app_config.dart';
 import '../../../core/constants/app_texts.dart';
 import '../../../core/utils/extensions.dart';
 import '../../../core/utils/validators.dart';
+import '../models/product.dart';
+import 'product_card.dart';
 
 /// Données saisies dans le formulaire de publication (photo déjà compressée).
+/// [photo] est null en modification si le producteur garde l'ancienne photo.
 class ProductFormData {
   const ProductFormData({
     required this.name,
@@ -20,7 +23,7 @@ class ProductFormData {
     required this.minPrice,
     required this.harvestDate,
     required this.address,
-    required this.photo,
+    this.photo,
   });
 
   final String name;
@@ -30,13 +33,16 @@ class ProductFormData {
   final int minPrice;
   final DateTime harvestDate;
   final String address;
-  final XFile photo;
+  final XFile? photo;
 }
 
 class ProductForm extends StatefulWidget {
-  const ProductForm({super.key, required this.onSubmit});
+  const ProductForm({super.key, required this.onSubmit, this.initial});
 
   final Future<void> Function(ProductFormData data) onSubmit;
+
+  /// Produit à modifier : préremplit le formulaire, photo facultative.
+  final Product? initial;
 
   @override
   State<ProductForm> createState() => _ProductFormState();
@@ -58,6 +64,23 @@ class _ProductFormState extends State<ProductForm> {
   bool _photoMissing = false;
   bool _isSubmitting = false;
 
+  bool get _editing => widget.initial != null;
+
+  @override
+  void initState() {
+    super.initState();
+    final p = widget.initial;
+    if (p == null) return;
+    _nameController.text = p.name;
+    _varietyController.text = p.variety;
+    _quantityController.text = '${p.quantity}';
+    _priceController.text = '${p.minPrice}';
+    _addressController.text = p.address;
+    _harvestDate = p.harvestDate;
+    _dateController.text = p.harvestDate.dmy;
+    if (AppConfig.units.contains(p.unit)) _unit = p.unit;
+  }
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -71,10 +94,15 @@ class _ProductFormState extends State<ProductForm> {
 
   Future<void> _selectHarvestDate() async {
     final now = DateTime.now();
+    var firstDate = now.subtract(const Duration(days: 30));
+    // Produit ancien en modification : sa date doit rester sélectionnable.
+    if (_harvestDate != null && _harvestDate!.isBefore(firstDate)) {
+      firstDate = _harvestDate!;
+    }
     final selected = await showDatePicker(
       context: context,
       initialDate: _harvestDate ?? now,
-      firstDate: now.subtract(const Duration(days: 30)),
+      firstDate: firstDate,
       lastDate: now.add(const Duration(days: 365)),
     );
     if (selected == null) return;
@@ -148,8 +176,8 @@ class _ProductFormState extends State<ProductForm> {
 
   Future<void> _submit() async {
     final valid = _formKey.currentState!.validate();
-    setState(() => _photoMissing = _photo == null);
-    if (!valid || _photo == null) return;
+    setState(() => _photoMissing = _photo == null && !_editing);
+    if (!valid || _photoMissing) return;
 
     setState(() => _isSubmitting = true);
     try {
@@ -162,7 +190,7 @@ class _ProductFormState extends State<ProductForm> {
           minPrice: int.parse(_priceController.text.trim()),
           harvestDate: _harvestDate!,
           address: _addressController.text.trim(),
-          photo: _photo!,
+          photo: _photo,
         ),
       );
     } finally {
@@ -179,7 +207,7 @@ class _ProductFormState extends State<ProductForm> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          if (_photo == null)
+          if (_photo == null && !_editing)
             OutlinedButton.icon(
               onPressed: _isSubmitting ? null : _showPhotoOptions,
               icon: const Icon(Icons.add_a_photo_outlined, size: 32),
@@ -194,14 +222,17 @@ class _ProductFormState extends State<ProductForm> {
               ),
             )
           else ...[
-            ClipRRect(
-              borderRadius: BorderRadius.circular(16),
-              child: Image.file(
-                File(_photo!.path),
-                height: 220,
-                fit: BoxFit.cover,
-              ),
-            ),
+            if (_photo != null)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.file(
+                  File(_photo!.path),
+                  height: 220,
+                  fit: BoxFit.cover,
+                ),
+              )
+            else
+              Center(child: ProductImage(product: widget.initial!, size: 220)),
             TextButton.icon(
               onPressed: _isSubmitting ? null : _showPhotoOptions,
               icon: const Icon(Icons.edit_outlined),
@@ -318,7 +349,13 @@ class _ProductFormState extends State<ProductForm> {
                     child: CircularProgressIndicator(strokeWidth: 2),
                   )
                 : const Icon(Icons.check),
-            label: Text(_isSubmitting ? AppTexts.publishing : AppTexts.publish),
+            label: Text(
+              _isSubmitting
+                  ? AppTexts.publishing
+                  : _editing
+                      ? AppTexts.save
+                      : AppTexts.publish,
+            ),
           ),
         ],
       ),

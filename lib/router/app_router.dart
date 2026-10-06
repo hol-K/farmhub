@@ -77,6 +77,13 @@ final routerProvider = Provider<GoRouter>((ref) {
             path: 'product/:id',
             builder: (_, state) =>
                 producer.ProductDetailScreen(productId: state.pathParameters['id']!),
+            routes: [
+              GoRoute(
+                path: 'edit',
+                builder: (_, state) =>
+                    PublishScreen(productId: state.pathParameters['id']!),
+              ),
+            ],
           ),
         ],
       ),

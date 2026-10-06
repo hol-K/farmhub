@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../core/constants/app_texts.dart';
 import '../../../core/providers/auth_provider.dart';
 import '../../../core/providers/connectivity_provider.dart';
+import '../../../core/services/firebase_service.dart';
 import '../../../core/utils/extensions.dart';
+import '../models/product.dart';
 import '../providers.dart';
 import '../widgets/product_card.dart';
 import '../widgets/sync_badge.dart';
@@ -49,7 +52,10 @@ class ProductDetailScreen extends ConsumerWidget {
                           ),
                         ),
                         const SizedBox(width: 12),
-                        SyncBadge(pending: item.hasPendingWrites),
+                        SyncBadge(
+                          pending: item.hasPendingWrites,
+                          sold: item.sold,
+                        ),
                       ],
                     ),
                     if (item.variety.isNotEmpty) ...[
@@ -81,6 +87,36 @@ class ProductDetailScreen extends ConsumerWidget {
                         label: AppTexts.detailPublishedOn,
                         value: item.createdAt!.dmy,
                       ),
+                    const SizedBox(height: 24),
+                    FilledButton.icon(
+                      onPressed: () =>
+                          context.push('/producer/product/${item.id}/edit'),
+                      icon: const Icon(Icons.edit_outlined),
+                      label: const Text(AppTexts.edit),
+                    ),
+                    const SizedBox(height: 12),
+                    OutlinedButton.icon(
+                      // Pas d'await : fonctionne aussi hors-ligne.
+                      onPressed: () => FirebaseService.products
+                          .doc(item.id)
+                          .update({'sold': !item.sold})
+                          .ignore(),
+                      icon: Icon(
+                        item.sold ? Icons.replay : Icons.check_circle_outline,
+                      ),
+                      label: Text(
+                        item.sold ? AppTexts.markAvailable : AppTexts.markSold,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextButton.icon(
+                      onPressed: () => _delete(context, item),
+                      icon: const Icon(Icons.delete_outline),
+                      label: const Text(AppTexts.delete),
+                      style: TextButton.styleFrom(
+                        foregroundColor: Theme.of(context).colorScheme.error,
+                      ),
+                    ),
                   ],
                 );
               },
@@ -88,6 +124,39 @@ class ProductDetailScreen extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> _delete(BuildContext context, Product item) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text(AppTexts.deleteConfirmTitle),
+        content: const Text(AppTexts.deleteConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text(AppTexts.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text(AppTexts.delete),
+          ),
+        ],
+      ),
+    );
+    if (confirmed != true || !context.mounted) return;
+
+    FirebaseService.products.doc(item.id).delete().ignore();
+    // Photo absente (pas encore envoyée, ou Storage inactif) : erreur ignorée.
+    if (item.photoUrl != null) {
+      FirebaseService.productPhoto(item.id).delete().ignore();
+    }
+
+    final messenger = ScaffoldMessenger.of(context);
+    context.pop();
+    messenger.showSnackBar(
+      const SnackBar(content: Text(AppTexts.deleteSuccess)),
     );
   }
 }

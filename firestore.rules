@@ -28,9 +28,12 @@ service cloud.firestore {
       allow read: if signedIn();
       allow create: if signedIn()
         && request.resource.data.producerId == request.auth.uid;
-      allow update, delete: if signedIn()
+      allow update: if signedIn()
         && resource.data.producerId == request.auth.uid
         && request.resource.data.producerId == resource.data.producerId;
+      // Pas de request.resource sur une suppression : on vérifie seulement le propriétaire.
+      allow delete: if signedIn()
+        && resource.data.producerId == request.auth.uid;
     }
   }
 }

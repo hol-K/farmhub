@@ -4,13 +4,20 @@ import '../../../core/constants/app_texts.dart';
 import '../../../core/theme/app_theme.dart';
 
 class SyncBadge extends StatelessWidget {
-  const SyncBadge({super.key, required this.pending});
+  const SyncBadge({super.key, required this.pending, this.sold = false});
 
   final bool pending;
 
+  /// « Vendu » remplace « Publié » (l'attente d'envoi reste prioritaire).
+  final bool sold;
+
   @override
   Widget build(BuildContext context) {
-    final color = pending ? AppTheme.pending : AppTheme.published;
+    final color = pending
+        ? AppTheme.pending
+        : sold
+            ? Colors.grey.shade700
+            : AppTheme.published;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
@@ -18,7 +25,11 @@ class SyncBadge extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
-        pending ? AppTexts.syncPending : AppTexts.syncPublished,
+        pending
+            ? AppTexts.syncPending
+            : sold
+                ? AppTexts.sold
+                : AppTexts.syncPublished,
         style: TextStyle(
           color: color,
           fontSize: 13,

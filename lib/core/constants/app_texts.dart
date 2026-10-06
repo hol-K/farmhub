@@ -86,6 +86,18 @@ abstract final class AppTexts {
   static const detailLocation = 'Localisation';
   static const detailPublishedOn = 'Publié le';
 
+  // === Gestion d'un produit (producteur) ===
+  static const editTitle = 'Modifier la récolte';
+  static const edit = 'Modifier';
+  static const editSuccess = 'Modifications enregistrées.';
+  static const markSold = 'Marquer vendu';
+  static const markAvailable = 'Remettre en vente';
+  static const sold = 'Vendu';
+  static const delete = 'Supprimer';
+  static const deleteConfirmTitle = 'Supprimer ce produit ?';
+  static const deleteConfirmBody = 'Il disparaîtra pour tous les acheteurs. Action définitive.';
+  static const deleteSuccess = 'Produit supprimé.';
+
   // === Lot 3 : Mes produits ===
   static const myProductsTitle = 'Mes produits';
   static const publishFab = 'Publier';

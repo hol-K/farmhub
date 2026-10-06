@@ -90,7 +90,10 @@ class ProductCard extends StatelessWidget {
                     ),
                     if (showSync) ...[
                       const SizedBox(height: 8),
-                      SyncBadge(pending: product.hasPendingWrites),
+                      SyncBadge(
+                        pending: product.hasPendingWrites,
+                        sold: product.sold,
+                      ),
                     ],
                   ],
                 ),

@@ -16,6 +16,7 @@ class Product {
     required this.address,
     this.photoUrl,
     this.createdAt,
+    this.sold = false,
     this.hasPendingWrites = false,
   });
 
@@ -41,6 +42,9 @@ class Product {
   /// null tant que le serveur n'a pas reçu le produit.
   final DateTime? createdAt;
 
+  /// true = vendu : masqué côté acheteur, badge « Vendu » côté producteur.
+  final bool sold;
+
   /// true = « En attente d'envoi » (écriture pas encore reçue par le serveur).
   final bool hasPendingWrites;
 
@@ -60,15 +64,13 @@ class Product {
       address: d['address'] as String? ?? '',
       photoUrl: d['photoUrl'] as String?,
       createdAt: (d['createdAt'] as Timestamp?)?.toDate(),
+      sold: d['sold'] as bool? ?? false,
       hasPendingWrites: doc.metadata.hasPendingWrites,
     );
   }
 
-  /// Données à écrire dans Firestore (création). `createdAt` est posé par le serveur.
-  Map<String, dynamic> toMap() => {
-        'producerId': producerId,
-        'producerName': producerName,
-        'producerPhone': producerPhone,
+  /// Champs que le producteur peut modifier après publication.
+  Map<String, dynamic> toEditableMap() => {
         'name': name,
         'variety': variety,
         'quantity': quantity,
@@ -76,7 +78,16 @@ class Product {
         'minPrice': minPrice,
         'harvestDate': Timestamp.fromDate(harvestDate),
         'address': address,
+      };
+
+  /// Données à écrire dans Firestore (création). `createdAt` est posé par le serveur.
+  Map<String, dynamic> toMap() => {
+        ...toEditableMap(),
+        'producerId': producerId,
+        'producerName': producerName,
+        'producerPhone': producerPhone,
         'photoUrl': photoUrl,
+        'sold': sold,
         'createdAt': FieldValue.serverTimestamp(),
       };
 }

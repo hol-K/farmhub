@@ -14,7 +14,11 @@ final allProductsProvider = StreamProvider<List<Product>>((ref) {
       .orderBy('createdAt', descending: true)
       .snapshots(includeMetadataChanges: true)
       .map((snapshot) {
-        final products = snapshot.docs.map(Product.fromFirestore).toList();
+        // Les produits vendus ne sont plus proposés aux acheteurs.
+        final products = snapshot.docs
+            .map(Product.fromFirestore)
+            .where((p) => !p.sold)
+            .toList();
         products.sort((a, b) {
           final aDate = a.createdAt ?? a.harvestDate;
           final bDate = b.createdAt ?? b.harvestDate;
